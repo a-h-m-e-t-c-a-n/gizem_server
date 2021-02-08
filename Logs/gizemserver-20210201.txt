@@ -1,0 +1,6 @@
+2021-02-01T00:21:38.4006082+03:00  [INF] User profile is available. Using '"/home/ahmet/.aspnet/DataProtection-Keys"' as key repository; keys will not be encrypted at rest. (a162847e)
+2021-02-01T00:21:38.8965001+03:00  [INF] Now listening on: "http://[::]:5000" (d826f4b8)
+2021-02-01T00:21:38.8968750+03:00  [INF] Now listening on: "http://[::]:5001" (d826f4b8)
+2021-02-01T00:21:38.8973789+03:00  [INF] Application started. Press Ctrl+C to shut down. (dcaefe54)
+2021-02-01T00:21:38.8975291+03:00  [INF] Hosting environment: "Development" (c3307c92)
+2021-02-01T00:21:38.8977162+03:00  [INF] Content root path: "/media/ahmet/workspace/project/gizem/WebRTCServer" (b5d60022)
