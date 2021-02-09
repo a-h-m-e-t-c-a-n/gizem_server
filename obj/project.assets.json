@@ -3750,11 +3750,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/media/ahmet/workspace/project/gizem/WebRTCServer/WebRTCServer.csproj",
+      "projectUniqueName": "/media/ahmet/workspace/project/gizem/gizem_server/WebRTCServer.csproj",
       "projectName": "WebRTCServer",
-      "projectPath": "/media/ahmet/workspace/project/gizem/WebRTCServer/WebRTCServer.csproj",
+      "projectPath": "/media/ahmet/workspace/project/gizem/gizem_server/WebRTCServer.csproj",
       "packagesPath": "/home/ahmet/.nuget/packages/",
-      "outputPath": "/media/ahmet/workspace/project/gizem/WebRTCServer/obj/",
+      "outputPath": "/media/ahmet/workspace/project/gizem/gizem_server/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/ahmet/.nuget/NuGet/NuGet.Config"

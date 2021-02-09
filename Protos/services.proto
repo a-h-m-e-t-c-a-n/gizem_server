@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option csharp_namespace = "gizem_services";
+
+package gizem;
+
+import "Protos/models.proto";
+
+service Authentication {
+    rpc Login (AuthenticationInfo) returns (TokenInfo);
+}
+service WebRTCSignal {
+  rpc SubscribeToRoom (WebRTCSubscribeReqest) returns (stream WebRTCEvent);
+  rpc SendEvent (WebRTCEvent) returns (stream EmptyResponse);
+}
+service Notification {
+  rpc Subscribe (EmptyRequest) returns (stream NotificationData);
+}
+service UserList {
+  rpc Subscribe (EmptyRequest) returns (stream UserListData);
+  rpc Ring(RingRequest) returns (stream RingResponse);
+  rpc Answer(AnswerRequest) returns (stream AnswerResponse);
+}
+

@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using WebRTCServer.Models;
+using gizem_models;
 
 namespace WebRTCServer.Interfaces
 {

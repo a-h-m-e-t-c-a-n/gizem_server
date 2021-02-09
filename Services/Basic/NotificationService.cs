@@ -1,6 +1,7 @@
 using System;
 using Microsoft.Extensions.Logging;
-using gizem_server;
+using gizem_services;
+using gizem_models;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
@@ -33,7 +34,7 @@ namespace WebRTCServer
         public async Task<bool> SendAsync(string userid, string name,string context, string detail)
         {
 
-            return await dataBus.WriteAsync<NotificationP>(userid, new NotificationP() { Name = name, Context = context, Detail = detail});
+            return await dataBus.WriteAsync<NotificationData>(userid, new NotificationData() { Name = name, Context = context, Detail = detail});
 
         }
     }

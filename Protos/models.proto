@@ -1,0 +1,132 @@
+syntax = "proto3";
+
+option csharp_namespace = "gizem_models";
+
+package gizem;
+
+message EmptyRequest{
+
+}
+message EmptyResponse{
+
+}
+
+message AuthenticationInfo {
+  string username = 1;
+  string password = 2;
+}
+
+message TokenInfo {
+  string  token     = 1;
+}
+
+message CallStatus {
+  enum Status {
+      None=0;
+      Ringing=1;
+      Answered=2;
+      Missed=3;
+   }
+
+  string context = 1;
+  Status state = 2;
+  string WebRTCSessionId=3;
+}
+  
+message User {
+  string UserId = 1;
+  string Name = 2;
+}
+message OnlineUser {
+  string StreamId = 1;
+  User User = 2;
+}
+
+message WebRTCEvent{
+  enum EventTypes {
+      eNone=0;
+      ePeers=1;
+      eOffer=2;
+      eAnswer=3;
+      eCandidate=4;
+      eLeave=5;
+      eBye=6;
+      eKeepAlive=7;
+   }
+   EventTypes EventType =1;
+   string SessionId=2;
+   string To=3;
+   string From=4;
+   
+   message DescriptionData{
+       string sdp=1;
+       string type=2;
+   }
+   message OfferData{
+     DescriptionData description=3;
+     string Media=5;
+   }
+   message AnswerData{
+     DescriptionData description=3;
+   }
+   message CandidateData{
+     int32  SdpMLineIndex=1;
+     string SdpMid=2;
+     string Candidate=3;
+   }
+   message PeersData{
+     repeated string Peers  =8;
+   }
+   oneof data {
+     OfferData Offer = 5;
+     AnswerData Answer =6;
+     CandidateData Candidate=7;
+     PeersData PeersList=8;
+  }
+}
+
+message NotificationData  {
+   string name      = 1;
+   string context   = 2;
+   string detail    = 3;
+}
+message UserInfo {
+    string userid  = 1;
+    string username  = 2;
+}
+message UserListData{
+    
+  repeated UserInfo user  = 1;
+}
+message RingRequest {
+   string userid  = 2;
+}
+
+
+message RingResponse {
+ enum Status {
+    None = 0;
+    Accepted = 1;
+    Rejected = 2;
+    Missed=3;
+  }
+  Status Response=1;
+  string WebRTCSessionId=2;
+}
+message WebRTCSubscribeReqest {
+  string session_id  = 1;
+}
+
+message AnswerRequest {
+   string context=1;
+}
+message AnswerResponse {
+ enum Status {
+    None = 0;
+    Connected=1;
+    Missed=2;
+  }
+  Status Response=1;
+  string WebRTCSessionId=2;
+
+}

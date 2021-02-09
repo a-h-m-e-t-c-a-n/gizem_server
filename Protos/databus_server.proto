@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option csharp_namespace = "databus_server";
+
+package databus;
+
+import "google/protobuf/any.proto";
+
+service Databus {
+  rpc Send(DatabusQ) returns (DatabusP);
+}
+
+message DatabusQ {
+  string contextid   = 1;
+  google.protobuf.Any data  = 2;
+}
+
+message DatabusP {
+  bool success=1;
+}
+

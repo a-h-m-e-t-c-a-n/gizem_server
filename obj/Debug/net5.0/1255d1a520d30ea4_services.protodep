@@ -1,0 +1,3 @@
+obj/Debug/net5.0/Protos/Services.cs \
+obj/Debug/net5.0/Protos/ServicesGrpc.cs: Protos/models.proto\
+ Protos/services.proto

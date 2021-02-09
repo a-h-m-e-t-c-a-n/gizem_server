@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using WebRTCServer.Interfaces;
-using WebRTCServer.Models;
+using gizem_models;
 
 namespace WebRTCServer.Mock
 {
@@ -23,7 +23,7 @@ namespace WebRTCServer.Mock
                 StreamId = streamid, 
                 User = new User()
                 {
-                    userid = userid,
+                    UserId = userid,
                     Name = "?????"
                 }
             });

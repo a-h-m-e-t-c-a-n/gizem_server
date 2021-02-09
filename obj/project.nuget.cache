@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "c3+0DY+ghTmeUxdxnmujBHYjl3eGSwrnTlTdZCLEC4E/sJkKum91kZ9+EtXJGI35w+5rkf/b6wJJQYna5DHjYg==",
+  "dgSpecHash": "gDrmBa0ATJPvSk8dv6glvboMUj4gGd8ZxDaXXYIbnwvfh/0yNkmjOWmR61bd1NI61Rlrh7nz7iFRneG8i2z2uA==",
   "success": true,
-  "projectFilePath": "/media/ahmet/workspace/project/gizem/WebRTCServer/WebRTCServer.csproj",
+  "projectFilePath": "/media/ahmet/workspace/project/gizem/gizem_server/WebRTCServer.csproj",
   "expectedPackageFiles": [
     "/home/ahmet/.nuget/packages/google.protobuf/3.14.0/google.protobuf.3.14.0.nupkg.sha512",
     "/home/ahmet/.nuget/packages/grpc.aspnetcore/2.34.0/grpc.aspnetcore.2.34.0.nupkg.sha512",

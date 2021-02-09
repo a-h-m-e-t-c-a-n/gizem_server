@@ -12,7 +12,7 @@ using WebRTCServer.Interfaces;
 
 namespace WebRTCServer
 {
-    public class StreamContext
+  /*  public class StreamContext
     {
         private readonly IServerUtil _serverUtil;
         private readonly ILogger<StreamContext> _logger;
@@ -144,5 +144,5 @@ namespace WebRTCServer
         }
 
        
-    }
+    }*/
 }

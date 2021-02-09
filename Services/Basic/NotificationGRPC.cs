@@ -2,14 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using gizem_server;
+using gizem_services;
+using gizem_models;
 using Grpc.Core;
 using WebRTCServer.Interfaces;
 
 
 namespace WebRTCServer
 {
-    public class NotificationGRPC : gizem_server.Notification.NotificationBase
+    public class NotificationGRPC : Notification.NotificationBase
     {
         private readonly DataBus dataBus;
         private readonly IServerUtil serverUtil;
@@ -21,14 +22,16 @@ namespace WebRTCServer
             this.serverUtil = serverUtil;
             this.notificationManager = notificationManager;
         }
-        public override async Task Subscribe(NotificationQ request, IServerStreamWriter<NotificationP> responseStream, ServerCallContext context)
+
+        public override async Task Subscribe(EmptyRequest request, IServerStreamWriter<NotificationData> responseStream, ServerCallContext context)
         {
+
             var userid = context.GetHttpContext().User.Identity.Name;
             var streamId = serverUtil.GenerateStreamId();
 
             try
             {
-                await dataBus.ReadAsync<NotificationP>(streamId, async (snapShot) =>
+                await dataBus.ReadAsync<NotificationData>(streamId, async (snapShot) =>
                 {
                     await responseStream.WriteAsync(snapShot);
                 }, context.CancellationToken);

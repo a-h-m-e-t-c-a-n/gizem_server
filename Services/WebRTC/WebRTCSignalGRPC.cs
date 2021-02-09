@@ -4,11 +4,13 @@ using System.Threading.Tasks;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
-using gizem_server;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Authorization;
 using WebRTCServer.Interfaces;
-using WebRTCServer.Models;
+using Google.Protobuf.Collections;
+using gizem_services;
+using gizem_models;
+
 
 namespace WebRTCServer
 {
@@ -20,9 +22,9 @@ namespace WebRTCServer
         private readonly IServerUtil serverUtil;
 
         public WebRTCSignalGRPC(DataBus dataBus,
-            WebRTCSessionService webRtcSessionContext,
-                                   IServerUtil serverUtil,
-                                   ILogger<WebRTCSignalGRPC> logger)
+                                WebRTCSessionService webRtcSessionContext,
+                                IServerUtil serverUtil,
+                                ILogger<WebRTCSignalGRPC> logger)
         {
             this.dataBus = dataBus;
             this.webRtcSessionContext = webRtcSessionContext;
@@ -30,27 +32,32 @@ namespace WebRTCServer
             this.logger = logger;
 
         }
-
-
-        public override async Task SubscribeSession(SubscribeSessionQ request, IServerStreamWriter<SubscribeSessionP> responseStream, ServerCallContext context)
+        public override  async Task SubscribeToRoom(WebRTCSubscribeReqest request,
+                                                    IServerStreamWriter<WebRTCEvent> responseStream,
+                                                    ServerCallContext context)
         {
+
             logger.Info(() => $"connected {context.Peer}");
 
             var streamId = serverUtil.GenerateStreamId();
-            await dataBus.ReadAsync<WebRTCSessionStatus>(streamId, async (update) =>
-            {
-               switch (update.Event)
-                {
-                    case WebRTCSessionStatus.EventTypes.PeersChanged:
-                        var data = new SubscribeSessionP();
-                        data.Peers.AddRange(update.Peers);
-                        await responseStream.WriteAsync(data);
-                        break;
-                }
-            }, context.CancellationToken);
+            var readTask = dataBus.ReadAsync<WebRTCEvent>(streamId, async (snapshot) =>
+             {
+                 await responseStream.WriteAsync(snapshot);
+
+             }, context.CancellationToken);
+
+            await webRtcSessionContext.RegisterPeer(request.SessionId, streamId);
+
+            await readTask;
+
             logger.Debug(() => $"End of Call {context.Peer}");
         }
-
+        public override async Task SendEvent(WebRTCEvent request,
+                                             IServerStreamWriter<EmptyResponse> responseStream,
+                                             ServerCallContext context)
+        {
+             await webRtcSessionContext.SendToOthers(request.SessionId,request.From,request);
+        }
 
     }
 }

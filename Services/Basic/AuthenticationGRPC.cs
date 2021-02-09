@@ -3,14 +3,15 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using gizem_server;
+using gizem_services;
+using gizem_models;
 using Grpc.Core;
 using Microsoft.IdentityModel.Tokens;
 using WebRTCServer.Interfaces;
 
 namespace WebRTCServer
 {
-    public class AuthenticationGRPC: gizem_server.Authentication.AuthenticationBase
+    public class AuthenticationGRPC: Authentication.AuthenticationBase
     {
         private readonly IUserRepository _userRepository;
         private readonly IAuthenticationSettings _authenticationSettings;
@@ -21,8 +22,8 @@ namespace WebRTCServer
             _authenticationSettings = authenticationSettings;
         }
         
-
-        public override async Task<AuthenticationP> Login(AuthenticationQ request, ServerCallContext context)
+        
+        public override async Task<TokenInfo> Login(AuthenticationInfo request, ServerCallContext context)
         {
             //TODO check request.Username and request.Password
 
@@ -52,7 +53,7 @@ namespace WebRTCServer
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var accessToken = tokenHandler.WriteToken(token);
             
-            return new AuthenticationP() {Token = accessToken};
+            return new TokenInfo() {Token = accessToken};
         }        
     }
 }

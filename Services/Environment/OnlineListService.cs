@@ -3,20 +3,21 @@ using System.Threading.Tasks;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
-using gizem_server;
+using gizem_services;
+using gizem_models;
 using Microsoft.AspNetCore.Authorization;
 using WebRTCServer.Interceptors;
 using WebRTCServer.Interfaces;
 using System.Linq;
 using System.Collections;
 using System.Collections.Concurrent;
-using WebRTCServer.Models;
+using gizem_models;
 
 namespace WebRTCServer
 {
     public class OnlineListService
     {
-        ConcurrentDictionary<String, OnlineUser> users = new ConcurrentDictionary<string, Models.OnlineUser>();
+        ConcurrentDictionary<String, OnlineUser> users = new ConcurrentDictionary<string, OnlineUser>();
         private readonly DataBus dataBus;
         private readonly IUserRepository userRepository;
         private readonly ILogger<OnlineListService> logger;
@@ -35,11 +36,11 @@ namespace WebRTCServer
             var onlineUsers = users.Values.ToArray();
             foreach (var onlineUser1 in onlineUsers)
             {
-                var response = new SubscribeListUpdateP();
+                var response = new UserListData();
                 foreach (var onlineUser2 in onlineUsers)
                 {
                     var userInfo = new UserInfo();
-                    userInfo.Userid = onlineUser2.User.userid;
+                    userInfo.Userid = onlineUser2.User.UserId;
                     userInfo.Username = onlineUser2.User.Name;
                     response.User.Add(userInfo);
                 }
@@ -63,7 +64,7 @@ namespace WebRTCServer
         {
             var user = await userRepository.getUserByName(username);
 
-            return await Add(user.userid,streamid);
+            return await Add(user.UserId,streamid);
 
         }
         public async Task Remove(String userid)

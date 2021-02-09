@@ -2,10 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using gizem_server;
 using Grpc.Core;
 using WebRTCServer.Interfaces;
-
+/*
 
 namespace WebRTCServer
 {
@@ -30,3 +29,4 @@ namespace WebRTCServer
 
         
 }
+*/

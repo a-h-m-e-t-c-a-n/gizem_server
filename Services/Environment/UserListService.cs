@@ -3,15 +3,16 @@ using System.Threading.Tasks;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
-using gizem_server;
+using gizem_services;
+using gizem_models;
 using WebRTCServer.Interceptors;
 using WebRTCServer.Interfaces;
 using System.Threading;
-using WebRTCServer.Models;
+using gizem_models;
 
 namespace WebRTCServer
 {
-    public class UserListGRPC : gizem_server.UserList.UserListBase
+    public class UserListGRPC : UserList.UserListBase
     {
         private readonly ILogger<UserListGRPC> logger;
         private readonly DataBus dataBus;
@@ -57,23 +58,22 @@ namespace WebRTCServer
               await subscription.WaitAsync();
               await onlineListManager.RemoveFromList(username);
              logger.Debug(() => $"End of SubscribeListUpdate {context.Peer}");
+
          }*/
 
         [FrontAuth]
-        public override async Task SubscribeListUpdate(SubscribeListUpdateQ request,
-                                                       IServerStreamWriter<SubscribeListUpdateP> responseStream,
-                                                       ServerCallContext context)
+        public override async Task Subscribe(EmptyRequest request, IServerStreamWriter<UserListData> responseStream, ServerCallContext context)
         {
             var userid = context.GetHttpContext().User.Identity.Name;
             var streamId = serverUtil.GenerateStreamId();
             try
             {
-                var readTask = dataBus.ReadAsync<SubscribeListUpdateP>(streamId, async (update) =>
+                var readTask = dataBus.ReadAsync<UserListData>(streamId, async (update) =>
                 {
                     await responseStream.WriteAsync(update);
                 }, context.CancellationToken);
 
-                if (await onlineListManager.AddByName(userid, streamId))
+                if (await onlineListManager.Add(userid, streamId))
                 {
                     await readTask;
                 }
@@ -93,7 +93,7 @@ namespace WebRTCServer
         }
 
         [FrontAuth]
-        public override async Task Ring(RingQ request, IServerStreamWriter<RingP> responseStream, ServerCallContext context)
+        public override async Task Ring(RingRequest request, IServerStreamWriter<RingResponse> responseStream, ServerCallContext context)
         {
 
             CancellationTokenSource s_cts = CancellationTokenSource.CreateLinkedTokenSource(context.CancellationToken);
@@ -101,11 +101,11 @@ namespace WebRTCServer
             var streamId = serverUtil.GenerateStreamId();
             try
             {
-                var readTask = dataBus.ReadAsync<CallStatus>(streamId, async (update) =>
+                var readTask = dataBus.ReadAsync<CallStatus>(streamId, async (snapshot) =>
                           {
-                              if (update.State == CallStatus.Status.Answered)
+                              if (snapshot.State == CallStatus.Types.Status.Answered)
                               {
-                                  await responseStream.WriteAsync(new RingP() { Response = RingP.Types.Status.Accepted, WebRTCSessionId = update.WebRTCSessionId });
+                                  await responseStream.WriteAsync(new RingResponse() { Response = RingResponse.Types.Status.Accepted, WebRTCSessionId = snapshot.WebRTCSessionId });
                                   dataBus.Complete(streamId);
                               }
 
@@ -130,23 +130,24 @@ namespace WebRTCServer
 
             logger.Debug(() => $"End of Ring {context.Peer}");
         }
-        public override async Task Answer(AnswerQ request, IServerStreamWriter<AnswerP> responseStream, ServerCallContext context)
+        public override async Task Answer(AnswerRequest request, IServerStreamWriter<AnswerResponse> responseStream, ServerCallContext context)
         {
             WebRTCSessionData webRTCSessionData = webRTCSessionContext.OpenSession();
 
             if (!await dataBus.WriteAsync<CallStatus>(
                 request.Context,
-                new CallStatus() { Context = request.Context, State = CallStatus.Status.Answered, WebRTCSessionId = webRTCSessionData.SessionId }))
+                new CallStatus() { Context = request.Context, State = CallStatus.Types.Status.Answered, WebRTCSessionId = webRTCSessionData.SessionId }))
             {
                 webRTCSessionContext.CloseSession(webRTCSessionData.SessionId);
-                await responseStream.WriteAsync(new AnswerP() { Response = AnswerP.Types.Status.Missed });
+                await responseStream.WriteAsync(new AnswerResponse() { Response = AnswerResponse.Types.Status.Missed });
             }
             else
             {
-                await responseStream.WriteAsync(new AnswerP() { Response = AnswerP.Types.Status.Connected, WebRTCSessionId = webRTCSessionData.SessionId });
+                await responseStream.WriteAsync(new AnswerResponse() { Response = AnswerResponse.Types.Status.Connected, WebRTCSessionId = webRTCSessionData.SessionId });
             }
 
 
         }
     }
 }
+

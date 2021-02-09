@@ -16,7 +16,6 @@ namespace WebRTCServer.Utils
         private static ConcurrentDictionary<int, GrpcChannel> _channels = new ConcurrentDictionary<int, GrpcChannel>();
 
         private readonly IServerInfoSettings _serverInfoSettings;
-        private readonly StreamContext streamContext;
 
         public ServerUtil(IServerInfoSettings serverInfoSettings)
         {
